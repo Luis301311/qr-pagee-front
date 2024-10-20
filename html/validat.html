@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validar Código QR</title>
+    <link rel="stylesheet" href="../style/validate.css">
+</head>
+<body>
+    <h1>Validar Código QR</h1>
+    <form id="validateForm">
+        <textarea id="qrCodeData" placeholder='{"name":"Carlos Garcia","id":"21332423"}' required></textarea>
+        <button type="submit">Validar QR</button>
+    </form>
+    <div id="validationResult"></div>
+
+    <script>
+        document.getElementById('validateForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const qrCodeData = document.getElementById('qrCodeData').value;
+            
+            const response = await fetch('http://localhost:3000/qr-code/validate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ qrCodeData }),  // Asegúrate de que se envíe como un objeto
+            });
+
+            const result = await response.json();
+            const validationResult = result ? "Código QR válido" : "Código QR no válido";
+            document.getElementById('validationResult').innerText = validationResult;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar QR Code</title>
+    <link rel="stylesheet" href="../style/generate.css"> <!-- Enlace a la hoja de estilos -->
+</head>
+<body>
+    <h1>Generar Código QR</h1>
+    <form id="qrForm">
+        <input type="text" id="name" placeholder="Nombre" required>
+        <input type="text" id="id" placeholder="Cédula" required>
+        <button type="submit">Generar QR</button>
+    </form>
+    <div id="qrCodeContainer"></div>
+    <div id="errorMessage" style="color: red;"></div> <!-- Contenedor para mensajes de error -->
+
+    <script>
+        document.getElementById('qrForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const id = document.getElementById('id').value;
+            document.getElementById('errorMessage').textContent = ''; // Limpiar mensajes de error
+            
+            try {
+                const response = await fetch('http://localhost:3000/qr-code/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, id }),
+                });
+
+                // Verificar si la respuesta fue exitosa
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    throw new Error(errorResponse.message || 'Error desconocido al generar el código QR');
+                }
+
+                const result = await response.json();
+                document.getElementById('qrCodeContainer').innerHTML = `<img src="${result.qrImage}" alt="Código QR">`;
+            } catch (error) {
+                // Mostrar mensaje de error
+                document.getElementById('errorMessage').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
+
