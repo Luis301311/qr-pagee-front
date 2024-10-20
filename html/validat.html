@@ -20,7 +20,7 @@
             
             const qrCodeData = document.getElementById('qrCodeData').value;
             
-            const response = await fetch('http://localhost:3000/qr-code/validate', {
+            const response = await fetch('https://validate-qr.onrender.com/qr-code/validate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
